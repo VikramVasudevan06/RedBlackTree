@@ -11,12 +11,14 @@ class Node{
   Node();
   ~Node();
   //initializing variables
-  char color = 'r';
+  char color;
   Node* parent;
   Node* left;
   Node* right;
   int data;
   //function prototypes
+  Node* getSibling();
+  Node* getSuccessor();
   void setColor(char newColor);
   char getColor();
   Node* getUncle();

@@ -20,6 +20,40 @@ char Node :: getColor(){
   return color;
 
 }
+
+
+Node* Node :: getSuccessor(){
+  if(this->getRight() == NULL && this->getLeft() != NULL){
+    return this->getLeft();
+  }
+  else if(this->getLeft() == NULL && this->getRight() != NULL){
+    return this->getRight();
+  }
+  else if(this->getLeft() != NULL && this->getRight() != NULL){
+    Node* tempNode = this->getRight();
+    if(this->getRight()->getLeft() != NULL){
+      while(tempNode->getLeft() != NULL){
+        tempNode = tempNode->getLeft();
+      }
+    }
+    return tempNode;
+  }
+  else if(this->getLeft() == NULL && this->getRight() == NULL){
+    cout << "Checked" << endl;
+    return NULL;
+  }
+  return NULL;
+
+
+}
+Node* Node :: getSibling(){
+  if(this->getParent()->getRight() != this){
+    return this->getParent()->getRight();
+  }
+  return this->getParent()->getLeft();
+  
+
+}
 Node* Node::getUncle(){
   Node* uncle = new Node();
   if(this->getParent()->getInformation() <= this->getInformation()){

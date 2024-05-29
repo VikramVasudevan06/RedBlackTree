@@ -16,12 +16,13 @@ Node:: Node(){
 Node :: ~Node(){
   parent = NULL;
 }
+//function that gets the color of the node.
 char Node :: getColor(){
   return color;
 
 }
 
-
+//function that gets the successor of the node.
 Node* Node :: getSuccessor(){
   if(this->getRight() == NULL && this->getLeft() != NULL){
     return this->getLeft();
@@ -39,13 +40,13 @@ Node* Node :: getSuccessor(){
     return tempNode;
   }
   else if(this->getLeft() == NULL && this->getRight() == NULL){
-    cout << "Checked" << endl;
     return NULL;
   }
   return NULL;
 
 
 }
+//function that gets the sibling of the node.
 Node* Node :: getSibling(){
   if(this->getParent()->getRight() != this){
     return this->getParent()->getRight();
@@ -54,6 +55,7 @@ Node* Node :: getSibling(){
   
 
 }
+//function that gets the uncle of the node.
 Node* Node::getUncle(){
   Node* uncle = new Node();
   if(this->getParent()->getInformation() <= this->getInformation()){
@@ -64,6 +66,7 @@ Node* Node::getUncle(){
   }
   return uncle;
 }
+//function that sets the color of the node.
 void Node :: setColor(char newColor){
     color = newColor;
 }

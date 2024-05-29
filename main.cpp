@@ -1,7 +1,8 @@
 /*
 Author: Vikram Vasudevan
-Date: 4/22/2024
-Description: This code inserts numbers into a red-black tree.
+Date: 5/28/2024
+Description: This code inserts numbers into a red-black tree. It also successfully deletes nodes from the red black tree and effectively rebalances the tree.
+Citations: I collaborated with Ashvika Singhal throughout a lot of the creation process.
  */
 
 
@@ -18,6 +19,7 @@ void add(Node* &root, Node* current, Node* newNode);
 void print(Node* current, int count);
 bool search(Node* current, int value);
 void remove(int direction, Node* &root, Node* current, int value);
+//insert cases
 void caseThree(Node* &root, Node* grandparent, Node* parent, Node* uncle, Node* newNode);
 void caseFour(Node* &root, Node* grandparent, Node* parent, Node* uncle, Node* newNode);
 void caseFive(Node* &root, Node* grandparent, Node* parent, Node* uncle, Node* newNode);
@@ -26,12 +28,14 @@ void leftRotation(Node* &root, Node* current);
 void rightRotation(Node* &root, Node* current); 
 void deleteFixTree(Node* &root, Node* current, bool deleted);
 Node* findNode(Node* current, int value);
+//delete cases
 void dCaseTwo(Node* current, Node* &root);
 void dCaseThree(Node* current, Node* &root);
 void dCaseFour(Node* current, Node* &root);
 void dCaseFive(Node* current, Node* &root);
 void dCaseSix(Node* current, Node* &root);
 void sixCases(Node* &root, Node* current, bool deleted);
+
 //main
 int main(){
   
@@ -66,12 +70,12 @@ int main(){
                     cin.get();
                     Node* newNode = new Node();
                     newNode->setInformation(tempInt);
-		    //calling add
+		                //calling add
                     add(root, root, newNode);
                 }  
             
             }
-	  //adding by file
+	          //adding by file
             else if(method == 'f'){
                 vector<int> nums;
                 fstream first_stream;
@@ -88,10 +92,9 @@ int main(){
 		                add(root, root, newNode);
                 }
 
-
             }
         }
-	else if(strcmp(choice, "REMOVE") == 0){
+	      else if(strcmp(choice, "REMOVE") == 0){
             int value;
             cout << "What number would you like to remove? " << endl;
             cin >> value;
@@ -126,7 +129,6 @@ void caseThree(Node* &root, Node* grandparent, Node* parent, Node* uncle, Node* 
 //this function is called when case 4 occurs, and it changes the tree before case 5 is called to finally fix the tree.
 void caseFour(Node* &root, Node* grandparent, Node* parent, Node* uncle, Node* newNode){
   //determining which direction the child is in and fixing the tree accordingly.
-  cout << "HI" << endl;
   if(newNode->getInformation() >= parent->getInformation()){
     leftRotation(root, newNode);
   }
@@ -135,19 +137,17 @@ void caseFour(Node* &root, Node* grandparent, Node* parent, Node* uncle, Node* n
 }
 }
 
+//this function executes a left rotation, a process which is used in many of the cases for both addition and deletion.
 void leftRotation(Node* &root, Node* current){
   Node* tempGrandparent = current->getParent()->getParent();
   Node* tempParent = current->getParent();
   Node* tempLeft = current->getLeft();
-  cout << "Parent1: " << tempParent->getInformation() << endl;
   if(current->getParent() == root){
     root = current;
     current->setParent(NULL);
   }
   else{
     current->setParent(tempGrandparent);
-    cout << "In here" << endl;
-    cout << current->getParent()->getInformation() << endl;
     if(tempGrandparent->getInformation() > current->getInformation()){
       tempGrandparent->setLeft(current);
     }
@@ -155,23 +155,19 @@ void leftRotation(Node* &root, Node* current){
       tempGrandparent->setRight(current);
     }
   }
-  
   current->setLeft(tempParent);
   tempParent->setParent(current);
   tempParent->setRight(tempLeft);
   if(tempLeft != NULL){
     tempLeft->setParent(tempParent);
   }
-  cout << "Exited1" << endl;
-
 }
-     
+//this function executes a right rotation, a process which is used in many of the cases for both addition and deletion.
 void rightRotation(Node* &root, Node* current){
   Node* tempParent = current->getParent();
   Node* tempGrandparent = current->getParent()->getParent();
   Node* tempRight = current->getRight();
 
-  cout << "Parent: " << tempParent->getInformation() << endl;
   if(current->getParent() == root){
     root = current;
     current->setParent(NULL);
@@ -185,17 +181,12 @@ void rightRotation(Node* &root, Node* current){
       tempGrandparent->setRight(current);
     }
   }
-  cout << "1" << endl;
   current->setRight(tempParent);
-  cout << "2" << endl;
   tempParent->setParent(current);
-  cout << "3" << endl;
   tempParent->setLeft(tempRight);
-  cout << "4" << endl;
   if(tempRight != NULL){
     tempRight->setParent(tempParent);
   }
-  cout << "Exited" << endl;
 }
  
 //this function is called when case 5 occurs, and it fixes the tree.
@@ -208,7 +199,6 @@ void caseFive(Node* &root, Node* grandparent, Node* parent, Node* uncle, Node* n
   //checking to see which direction the node is in.
   if(parent->getInformation() > newNode->getInformation()){
     rightRotation(root, parent);
-
     //resetting colors
     parent->setColor('b');
     grandparent->setColor('r');
@@ -264,7 +254,6 @@ void fixTree(Node* &root, Node* current){
   }
   
     }
-
 }
 
 //regular add function from binary search tree. Adds values to the tree
@@ -297,8 +286,8 @@ void add(Node* &root, Node* current, Node* newNode){
     }
     //fixing the tree after every new node is added.
     fixTree(root, newNode);
-
 }
+//this function finds a node in the red-black tree and returns it if it exists.
 Node* findNode(Node* current, int value){
   if(current->getInformation() == value){
     return current;
@@ -315,6 +304,7 @@ Node* findNode(Node* current, int value){
   }
   return current;
 }
+//function that begins a preliminary fix on the tree if the tree matches the case 2 requirements.
 void dCaseTwo(Node* current, Node* &root){
   if(current->getSibling()->getInformation() > current->getInformation()){
     current->getParent()->setColor('r');
@@ -327,18 +317,16 @@ void dCaseTwo(Node* current, Node* &root){
     rightRotation(root, current->getSibling());
   }
 }
-
+//function that begins a preliminary fix on the tree if the tree matches the case 3 requirements.
 void dCaseThree(Node* current, Node* &root){
   current->getSibling()->setColor('r');
-  cout << "Made it out" << endl;
 }
-
+//function that completely fixes the tree if the tree matches the case 4 requirements.
 void dCaseFour(Node* current, Node* &root){
   current->getParent()->setColor('b');
   current->getSibling()->setColor('r');
-  cout << "Made it out" << endl;
 }
-
+//function that begins a preliminary fix on the tree if the tree matches the case 5 requirements.
 void dCaseFive(Node* current, Node* &root){
   if(current->getSibling()->getInformation() > current->getInformation()){
     current->getSibling()->getLeft()->setColor('b');
@@ -352,6 +340,7 @@ void dCaseFive(Node* current, Node* &root){
   }
 }
 
+//function that completely fixes the tree if the tree matches the case 6 requirements.
 void dCaseSix(Node* current, Node* &root){
   char tempColor = current->getParent()->getColor();
   if(current->getSibling()->getInformation() > current->getInformation()){
@@ -367,182 +356,155 @@ void dCaseSix(Node* current, Node* &root){
     rightRotation(root, current->getSibling());
   }
 }
+//this function holds the six cases that exist if a double black node is created.
+//although there are technically six cases, in reality there are only really five cases that are used.
 void sixCases(Node* &root, Node* current, bool deleted){
-  cout << "entered this" << endl;
-  cout << current->getInformation()<< endl;
-      //six cases
-      cout << "STILL HERE" << endl;
-        if(current->getSibling()->getColor() == 'r'){
-          cout << "Case 2" << endl;
-          dCaseTwo(current, root);
-          print(root, 0);
-          sixCases(root, current, false);
+  //each if statement corresponds to one of the five used cases.
+  //case two
+  if(current->getSibling()->getColor() == 'r'){
+    //calling the actual case function
+    dCaseTwo(current, root);
+    //recursively calling the sixCases function again, since case 2 does not fully fix the tree.
+    sixCases(root, current, false);
+    //setting the boolean of deleted to true.
+    deleted = true;
+    return;
+  }
+  //case three
+  if(current->getParent()->getColor() == 'b' && current->getSibling()->getColor() == 'b' && (current->getSibling()->getLeft() == NULL ||
+    current->getSibling()->getLeft()->getColor() == 'b') && (current->getSibling()->getRight() == NULL || 
+    current->getSibling()->getRight()->getColor() == 'b')){
+    dCaseThree(current, root);
+    Node* tempNode = current->getParent();
+    //this is very important - the function should only delete a node if no other node has previously been deleted. This ensures that double
+    //deletions don't occur.
+    if(deleted == false){
+      remove(0, root, root, current->getInformation());
+      deleted = true;
+
+    }
+    //recursively call sixCases on the parent of current as long as the parent isn't the root.
+    if(tempNode != root){
+      sixCases(root, tempNode, true);
+    }
+    
+    return;
+  }
+  //case 4
+  if(current->getParent()->getColor() == 'r' && current->getSibling()->getColor() == 'b' && (current->getSibling()->getLeft() == NULL || current->getSibling()->getLeft()->getColor() == 'b') && 
+    (current->getSibling()->getRight() == NULL || current->getSibling()->getRight()->getColor() == 'b')){
+    dCaseFour(current, root);
+    if(deleted == false){
+      remove(0, root, root, current->getInformation());
+    } 
+    return;
+  }
+  //case 5: There are two case five if statements because combining the mirror image of case five into one if statement proved difficult.
+  if(current->getSibling()->getColor() == 'b'){
+    if(current->getSibling()->getInformation() > current->getInformation()){
+      if(current->getSibling()->getLeft() != NULL && current->getSibling()->getLeft()->getColor() == 'r' && (current->getSibling()->getRight() == NULL || 
+      current->getSibling()->getRight()->getColor() == 'b')){
+        dCaseFive(current, root);
+        dCaseSix(current, root);
+        if(deleted == false){
+          remove(0, root, root, current->getInformation());
           deleted = true;
-          return;
         }
-        cout << "STILL HERE 2" << endl;
-        if(current->getParent()->getColor() == 'b' && current->getSibling()->getColor() == 'b' && (current->getSibling()->getLeft() == NULL ||
-          current->getSibling()->getLeft()->getColor() == 'b') && (current->getSibling()->getRight() == NULL || 
-          current->getSibling()->getRight()->getColor() == 'b')){
-          cout << "Case 3" << endl;
-          dCaseThree(current, root);
-          Node* tempNode = current->getParent();
-          if(deleted == false){
-            cout << "ENTERED" << endl;
-            cout << "Current: " << current->getInformation() << endl;
-            remove(0, root, root, current->getInformation());
-
-            deleted = true;
-
-          }
-          cout << "Is this even a thing" << endl;
-          if(tempNode != root){
-            sixCases(root, tempNode, true);
-          }
-          
-          return;
+        return;
+      }
+    }
+    else if(current->getSibling()->getInformation() < current->getInformation()){
+      if(current->getSibling()->getRight() != NULL && current->getSibling()->getRight()->getColor() == 'r' && (current->getSibling()->getLeft() == NULL || 
+      current->getSibling()->getLeft()->getColor() == 'b')){
+        dCaseFive(current, root);
+        dCaseSix(current, root);
+        if(deleted == false){
+          remove(0, root, root, current->getInformation());
+          deleted = true;
         }
-        cout << "STILL HERE 3" << endl;
-        if(current->getParent()->getColor() == 'r' && current->getSibling()->getColor() == 'b' && (current->getSibling()->getLeft() == NULL || current->getSibling()->getLeft()->getColor() == 'b') && 
-          (current->getSibling()->getRight() == NULL || current->getSibling()->getRight()->getColor() == 'b')){
-          //case 4
-          cout << "Case 4" << endl;
-          dCaseFour(current, root);
-          if(deleted == false){
-            cout << "IN HERE" << endl;
-            remove(0, root, root, current->getInformation());
-          } 
-          return;
-        }
-        cout << "Still HERE 4" << endl;
-        if(current->getSibling()->getColor() == 'b'){
-          cout << "STILL HERE 5" << endl;
-          if(current->getSibling()->getInformation() > current->getInformation()){
-            cout << "1" << endl;
-            if(current->getSibling()->getLeft() != NULL && current->getSibling()->getLeft()->getColor() == 'r' && (current->getSibling()->getRight() == NULL || 
-            current->getSibling()->getRight()->getColor() == 'b')){
-              cout << "Case 5" << endl;
-              dCaseFive(current, root);
-              dCaseSix(current, root);
-              if(deleted == false){
-                remove(0, root, root, current->getInformation());
-                deleted = true;
-              }
-              return;
-            }
-          }
-          else if(current->getSibling()->getInformation() < current->getInformation()){
-            cout << "2" << endl;
-            if(current->getSibling()->getRight() != NULL && current->getSibling()->getRight()->getColor() == 'r' && (current->getSibling()->getLeft() == NULL || 
-            current->getSibling()->getLeft()->getColor() == 'b')){
-              cout << "Case 5" << endl;
-              dCaseFive(current, root);
-              dCaseSix(current, root);
-              if(deleted == false){
-                remove(0, root, root, current->getInformation());
-                deleted = true;
-              }
-              return;
-            }
-          }
-          cout << "STILL HERE 6" << endl;
-        }
-        cout << "STILL HERE 7" << endl;
-        cout << current->getSibling()->getInformation() << endl;
-        if(current->getSibling()->getRight() != NULL && current->getSibling()->getRight()->getColor() == 'r'){
-          cout << current->getSibling()->getRight()->getInformation() << endl;
-        }
-        else{
-          cout << "HI" << endl;
-        }
-        if(current->getSibling()->getInformation() > current->getInformation() && current->getSibling()->getColor() == 'b'){
-          cout << "made it here too" << endl;
-          if(current->getSibling()->getRight() != NULL && current->getSibling()->getRight()->getColor() == 'r'){
-            cout << "Case 6" << endl;
-            dCaseSix(current, root);
-            if(deleted == false){
-              cout << "inside v2.0" << endl;
-              remove(0, root, root, current->getInformation());
-            }
-            return;
-          }
-        }
-        else if(current->getSibling()->getInformation() < current->getInformation() && current->getSibling()->getColor() == 'b'){
-          cout << "In here" << endl;
-          if(current->getSibling()->getLeft() != NULL && current->getSibling()->getLeft()->getColor() == 'r'){
-            cout << "Case 6" << endl;
-            dCaseSix(current, root);
-            if(deleted == false){
-              cout << "inside this one" << endl;
-              cout << current->getInformation() << endl;
-              remove(0, root, root, current->getInformation());
-            }
-            return;
-          }
-        }
+        return;
+      }
+    }
+  }
+  //case 6 - similarly to with case 6, there are two if statements for it to account for the mirror image.
+  if(current->getSibling()->getInformation() > current->getInformation() && current->getSibling()->getColor() == 'b'){
+    if(current->getSibling()->getRight() != NULL && current->getSibling()->getRight()->getColor() == 'r'){
+      dCaseSix(current, root);
+      if(deleted == false){
+        remove(0, root, root, current->getInformation());
+      }
+      return;
+    }
+  }
+  else if(current->getSibling()->getInformation() < current->getInformation() && current->getSibling()->getColor() == 'b'){
+    if(current->getSibling()->getLeft() != NULL && current->getSibling()->getLeft()->getColor() == 'r'){
+      dCaseSix(current, root);
+      if(deleted == false){
+        remove(0, root, root, current->getInformation());
+      }
+      return;
+    }
+  }
 }
 
+//this function is called the very first time the user states they'd like to delete a node. It determines whether the delete case is simple, or whether it
+//requires the sixCases function.
+
+//Ashvika helped provide the idea of having two separate functions, one with the six cases and one without. Additionally, she helped with the idea of structuring the function
+//such that the deleteFixTree function calls itself twice, once when operating on the "deleted node" and once when operating on the successor.
 void deleteFixTree(Node* &root, Node* current, bool deleted){
-  print(root, 0);
-  cout << "WOOOOHOOOO" << endl;
-  cout << "CURRENT INFORMATION: " << current->getInformation() << endl;
+  //if the only node is the root, delete the root and return.
   if(current == root && current->getLeft() == NULL && current->getRight() == NULL){
     delete root;
     root = NULL;
     return;
   }
+  //cases for if the deleted node only has one child or no children.
   if((current->getLeft() == NULL && current->getRight() != NULL) || (current->getRight() == NULL && current->getLeft() != NULL) || current->getLeft() == NULL && current->getRight() == NULL){
-    cout << "HERE" << endl;
+    //if the deleted node is black with a red child, delete the node and change the child to black.
     if(current->getSuccessor() != NULL && current->getSuccessor()->getColor() == 'r'){
-      cout << "IN HERE" << endl;
       current->getSuccessor()->setColor('b');
-      cout << "Made it past" << endl;
       if(deleted == false){
         remove(0, root, root, current->getInformation());
         deleted = true;
-
       }
       return;
     }
+    //if the deleted node is red, just delete the node.
     else if(current->getColor() == 'r' && (current->getSuccessor() == NULL || current->getSuccessor()->getColor() == 'b')){
-      cout << "IN HERE 2" << endl;
-
       if(deleted == false){
         remove(0, root, root, current->getInformation());
         deleted = true;
 
       }
     }
+    //if the deleted node is black with no children, call the six cases.
     else if(current->getColor() == 'b' && (current->getSuccessor() == NULL || current->getSuccessor()->getColor() == 'b')){
-        cout << current->getInformation() << endl;
-        cout << current->getParent()->getInformation() << endl;
-        cout << current->getSibling()->getInformation() << endl;
         sixCases(root, current, deleted);
 
         
     }
   }
+  //if the node has no children and is red, delete the node.
   if(current->getLeft() == NULL && current->getRight() == NULL && current->getColor() == 'r'){
 
-    remove(0, root, root, current->getInformation());
-    cout << "RED + DELETED" << endl;
-    
+    remove(0, root, root, current->getInformation());    
   }
+  //if the node has two children, swap the successor's value for the node's value then call deleteFixTree on the successor.
   else if(current->getLeft() != NULL && current->getRight() != NULL){
-    cout << "Back to the top" << endl;
     current->setInformation(current->getSuccessor()->getInformation());
     deleteFixTree(root, current->getSuccessor(), false);
   }
 
 }
 
-
+//remove function, which actually deletes nodes.
 void remove(int direction, Node* &root, Node* current, int value){
   bool recolor = false;
+  //if current is the node we want to delete.
     if(current->getInformation() == value){
-      cout << "0" << endl;
+      //if current has no children, set the parent to NULL.
       if(current->getRight() == NULL && current->getLeft() == NULL){
-        cout << "-1" << endl;
           if(current->getParent() != NULL){
               if(direction == 0){
                 if(current->getParent() != NULL){
@@ -561,10 +523,11 @@ void remove(int direction, Node* &root, Node* current, int value){
                 }
               }
           }
+          //delete
           delete current;
       }
+      //if current has one child on the left/right, move it up to take the place of the deleted node.
       else if(current->getLeft() == NULL){
-          cout << "1" << endl;
           if(direction == 0){
             if(current->getParent() != NULL){
               current->getParent()->setLeft(current->getRight());
@@ -585,7 +548,6 @@ void remove(int direction, Node* &root, Node* current, int value){
           delete current;
       }
       else if(current->getRight() == NULL){
-        cout << "2" << endl;
           if(direction == 0){
             if(current->getParent() != NULL){
               current->getParent()->setLeft(current->getLeft());
@@ -605,8 +567,8 @@ void remove(int direction, Node* &root, Node* current, int value){
           current->getLeft()->setParent(current->getParent());
           delete current;
       }
+      //if the node has two children, find the node's successor and replace it with the successor. Then delete the successor. 
       else{
-        cout << "3" << endl;
           Node* tempNode = current->getRight();
           int counter = 0;
           while(tempNode->getLeft() != NULL){
@@ -614,29 +576,25 @@ void remove(int direction, Node* &root, Node* current, int value){
               counter++;
           }
           current->setInformation(tempNode->getInformation());
-          cout << tempNode->getInformation() << "INFO" << endl;
           if(counter == 0){
-            cout << "2" << endl;
               current->setRight(tempNode->getRight());
               tempNode->getParent()->setRight(tempNode->getRight());
               if(tempNode->getRight() != NULL){
                 tempNode->getRight()->setParent(tempNode->getParent());
               }
               
-              cout << "4" << endl;
-          }
+            }
           else{
-            cout << "5" << endl;
-              tempNode->getParent()->setLeft(tempNode->getLeft());
-              if(tempNode->getLeft() != NULL){
-                tempNode->getLeft()->setParent(tempNode->getParent());
+              tempNode->getParent()->setLeft(tempNode->getRight());
+              if(tempNode->getRight() != NULL){
+                tempNode->getRight()->setParent(tempNode->getParent());
               }
               
-              cout << "6" << endl;
           }
           delete tempNode;
       }
     }
+    //if this isn't the correct node, keep going in the tree until you find the correct node.
     else if(current->getInformation() > value){
         remove(0, root, current->getLeft(), value);
     }
@@ -645,9 +603,11 @@ void remove(int direction, Node* &root, Node* current, int value){
     }
 }
 
-
 //printing out the tree
 void print(Node* current, int count){
+  if(count == 0 && current == NULL){
+    return;
+  }
     if(current->getRight() != NULL){
         print(current->getRight(), count + 1);
     }

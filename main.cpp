@@ -45,7 +45,7 @@ int main(){
     //while loop where code runs
     while(stillRunning == true){
       //prompting users for choice
-        cout << "What would you like to do? ADD, PRINT, REMOVE, or QUIT " << endl;
+        cout << "What would you like to do? ADD, PRINT, REMOVE, SEARCH, or QUIT " << endl;
         char choice[50];
         cin.get(choice, 50);
         cin.get();
@@ -100,6 +100,19 @@ int main(){
             cin >> value;
             cin.get();
             deleteFixTree(root, findNode(root, value), false);
+        }
+        else if(strcmp(choice, "SEARCH") == 0){
+          cout << "What number are you looking for? " << endl;
+          int num;
+          cin >> num;
+          cin.get();
+          Node* test = findNode(root, num);
+          if(test == NULL){
+            cout << "THAT NODE DOESN'T EXIST" << endl;
+          }
+          else{
+            cout << "THAT NODE EXISTS" << endl;
+          }
         }
 
       //calling print
@@ -296,10 +309,16 @@ Node* findNode(Node* current, int value){
     if(current->getLeft() != NULL){
       current = findNode(current->getLeft(), value);
     }
+    else{
+      return NULL;
+    }
   }
   else if(current->getInformation() < value){
     if(current->getRight() != NULL){
       current = findNode(current->getRight(), value);
+    }
+    else{
+      return NULL;
     }
   }
   return current;
